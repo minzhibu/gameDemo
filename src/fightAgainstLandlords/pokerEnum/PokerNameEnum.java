@@ -4,7 +4,7 @@ package fightAgainstLandlords.pokerEnum;
  * 扑克牌名称
  */
 public enum PokerNameEnum {
-    TWO("2",0),THREE("3",1),FOUR("4",2),FIVE("5",3),SIX("6",4),SEVEN("7",5),EIGHT("8",6),NINE("9",7),TEN("10",8),J("J",9),Q("Q",10),K("K",11),A("A",12);
+    TWO("2",12),THREE("3",0),FOUR("4",1),FIVE("5",2),SIX("6",3),SEVEN("7",4),EIGHT("8",5),NINE("9",6),TEN("10",7),J("J",8),Q("Q",9),K("K",10),A("A",11);
 
     private final String name;
     private final int sort;
