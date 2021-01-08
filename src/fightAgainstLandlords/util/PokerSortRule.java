@@ -13,8 +13,8 @@ public class PokerSortRule {
     private static Map<String,Integer> map;
 
     static{
-        map = Arrays.asList(PokerNameEnum.values()).stream().flatMap(pokerNameEnum ->
-                Arrays.asList(PokerTypeEnum.values()).stream().map(pokerTypeEnum -> new PokerSort(pokerNameEnum, pokerTypeEnum))).collect(Collectors.toMap(PokerSort::getName, PokerSort::getSort));
+        map = Arrays.stream(PokerNameEnum.values()).flatMap(pokerNameEnum ->
+                Arrays.stream(PokerTypeEnum.values()).map(pokerTypeEnum -> new PokerSort(pokerNameEnum, pokerTypeEnum))).collect(Collectors.toMap(PokerSort::getName, PokerSort::getSort));
         map.put("小王",53);
         map.put("大王",54);
     }

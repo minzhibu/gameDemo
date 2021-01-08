@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 public class PokerGenerate implements Generate<PokerBrand> {
     @Override
     public List<PokerBrand> generate() {
-        List<PokerBrand> result = Arrays.asList(PokerNameEnum.values()).stream().flatMap(pokerNameEnum ->
-                Arrays.asList(PokerTypeEnum.values()).stream().map(pokerTypeEnum -> new PokerBrand(pokerTypeEnum, pokerNameEnum))).collect(Collectors.toList());
-        result.addAll(Arrays.asList(PokerKingTypeEnum.values()).stream().map(PokerBrand::new).collect(Collectors.toList()));
+        List<PokerBrand> result = Arrays.stream(PokerNameEnum.values()).flatMap(pokerNameEnum ->
+                Arrays.stream(PokerTypeEnum.values()).map(pokerTypeEnum -> new PokerBrand(pokerTypeEnum, pokerNameEnum))).collect(Collectors.toList());
+        result.addAll(Arrays.stream(PokerKingTypeEnum.values()).map(PokerBrand::new).collect(Collectors.toList()));
         return result;
     }
 }

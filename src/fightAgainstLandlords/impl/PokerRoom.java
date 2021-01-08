@@ -4,24 +4,33 @@ import fightAgainstLandlords.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * 斗地主扑克牌房间
  */
 public class PokerRoom implements Room {
 
-    private List<PokerBrandGamePlayer> gamePlayers;
+    private List<PokerBrandGamePlayer> gamePlayers  = new ArrayList<>();;
+    //房间现在存在的牌
     private List<PokerBrand> brands;
+    //当前出牌人的下标
+    private int nowGamePlayersIndex;
+    //上次出的牌
+    private Stack<PokerBrand> brandsStack = new Stack<>();
 
+    /**
+     * 创建房间获取扑克牌
+     */
+    {
+        //生成54张扑克牌
+        generate(new PokerGenerate());
+    }
 
     @Override
     public void start() {
         if(!isEquipment()){
             return;
-        }
-        //为空的时候生成牌
-        if(brands == null){
-            generate(new PokerGenerate());
         }
         //洗牌
         shuffleTheCards(new PokerShuffleTheCards());
@@ -39,10 +48,7 @@ public class PokerRoom implements Room {
     @Override
     public boolean addGamePlayer(PokerBrandGamePlayer gamePlayer) {
         boolean isSuccess = true;
-        if(gamePlayers == null){
-            gamePlayers = new ArrayList<>();
-        }
-        if(gamePlayers.size() < 3){
+        if(gamePlayers.size() < 3&& !isRepeat(gamePlayer)){
             gamePlayers.add(gamePlayer);
         }else{
             isSuccess = false;
@@ -75,15 +81,30 @@ public class PokerRoom implements Room {
         brands = dealCards.dealCards(gamePlayers,brands);
     }
 
+    /**
+     * 排序
+     * @param sort
+     * @param brands
+     */
     private void sortPoker(Sort<PokerBrand> sort,List<PokerBrand> brands){
         sort.sort(brands);
     }
 
     /**
-     * 判断人数
+     * 判断人员是否到期切全部准备
      * @return
      */
     private boolean isEquipment() {
         return true;
+    }
+
+    /**
+     * 人员是否重复进入房间
+     * @param gamePlayer
+     * @return
+     */
+    private boolean isRepeat(PokerBrandGamePlayer gamePlayer){
+        long count = gamePlayers.stream().filter(pokerBrandGamePlayer -> pokerBrandGamePlayer.getPlayId() == gamePlayer.getPlayId()).count();
+        return count != 0;
     }
 }

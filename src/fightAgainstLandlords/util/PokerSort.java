@@ -4,10 +4,10 @@ import fightAgainstLandlords.pokerEnum.PokerNameEnum;
 import fightAgainstLandlords.pokerEnum.PokerTypeEnum;
 
 public class PokerSort {
-    PokerNameEnum pokerNameEnum;
-    PokerTypeEnum pokerTypeEnum;
+    private PokerNameEnum pokerNameEnum;
+    private PokerTypeEnum pokerTypeEnum;
 
-    public PokerSort(PokerNameEnum pokerNameEnum, PokerTypeEnum pokerTypeEnum) {
+    PokerSort(PokerNameEnum pokerNameEnum, PokerTypeEnum pokerTypeEnum) {
         this.pokerNameEnum = pokerNameEnum;
         this.pokerTypeEnum = pokerTypeEnum;
     }
@@ -20,10 +20,10 @@ public class PokerSort {
         return pokerTypeEnum;
     }
 
-    public String getName(){
+    String getName(){
         return pokerTypeEnum.getType() + pokerNameEnum.getName();
     }
-    public int getSort(){
+    int getSort(){
         return pokerTypeEnum.getSort() + (pokerNameEnum.getSort() * 4);
     }
 }
