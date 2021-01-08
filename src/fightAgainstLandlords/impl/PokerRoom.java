@@ -9,7 +9,7 @@ import java.util.Stack;
 /**
  * 斗地主扑克牌房间
  */
-public class PokerRoom implements Room {
+public class PokerRoom implements Room<PokerBrand> {
 
     private List<PokerBrandGamePlayer> gamePlayers  = new ArrayList<>();;
     //房间现在存在的牌
@@ -56,6 +56,20 @@ public class PokerRoom implements Room {
         return isSuccess;
     }
 
+    @Override
+    public void play(List<PokerBrand> brands) {
+        //当前出牌人的手中是否存在这些牌
+        if(gamePlayers.get(nowGamePlayersIndex).isExistence(brands)) {
+
+
+        }
+    }
+
+    @Override
+    public void waiver() {
+        nextGamePlayer();
+    }
+
     /**
      * 生成牌
      * @param pokerGenerate
@@ -64,6 +78,12 @@ public class PokerRoom implements Room {
         brands = pokerGenerate.generate();
     }
 
+    /**
+     * 切换到下一个人
+     */
+    private void nextGamePlayer(){
+        nowGamePlayersIndex = (nowGamePlayersIndex + 1) == gamePlayers.size() ? 0 :nowGamePlayersIndex + 1;
+    }
 
     /**
      * 洗牌

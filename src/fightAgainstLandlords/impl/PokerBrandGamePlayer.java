@@ -10,6 +10,8 @@ import java.util.UUID;
  */
 public class PokerBrandGamePlayer implements GamePlayer<PokerBrand> {
     private List<PokerBrand> brands;
+    //状态 0 ：未准备， 1：准备 ，3：正在游戏，4：玩家已退出进入托管
+    private int state;
     private final long playId;
 
     public PokerBrandGamePlayer() {
@@ -29,6 +31,23 @@ public class PokerBrandGamePlayer implements GamePlayer<PokerBrand> {
         return playId;
     }
 
+    /**
+     * 删除已经出掉的牌
+     * @param outBrands
+     * @return
+     */
+    public void getBrands(List<PokerBrand> outBrands){
+        brands.removeAll(outBrands);
+    }
+
+    /**
+     * 判断出去的牌是否存在手里
+     * @param outBrands
+     * @return
+     */
+    public boolean isExistence(List<PokerBrand> outBrands){
+        return brands.containsAll(outBrands);
+    }
     @Override
     public List<PokerBrand> out() {
         return null;
