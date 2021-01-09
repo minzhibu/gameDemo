@@ -1,6 +1,7 @@
 package fightAgainstLandlords.impl;
 
 import fightAgainstLandlords.*;
+import fightAgainstLandlords.pokerEnum.OutBrandType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +12,19 @@ import java.util.Stack;
  */
 public class PokerRoom implements Room<PokerBrand> {
 
+    //判断出牌的类型
+    private PokerJudgeBrandType pokerJudgeBrandType = new PokerJudgeBrandType();
+    //玩家
     private List<PokerBrandGamePlayer> gamePlayers  = new ArrayList<>();;
     //房间现在存在的牌
     private List<PokerBrand> brands;
     //当前出牌人的下标
     private int nowGamePlayersIndex;
+    //弃权的次数
+    private int waiverIndex;
     //上次出的牌
-    private Stack<PokerBrand> brandsStack = new Stack<>();
+    private Stack<List<PokerBrand>> brandsStack = new Stack<>();
+
 
     /**
      * 创建房间获取扑克牌
@@ -57,16 +64,35 @@ public class PokerRoom implements Room<PokerBrand> {
     }
 
     @Override
-    public void play(List<PokerBrand> brands) {
-        //当前出牌人的手中是否存在这些牌
-        if(gamePlayers.get(nowGamePlayersIndex).isExistence(brands)) {
+    public boolean play(List<PokerBrand> brands) {
+        boolean result = false;
+        //判断出的牌是否符合规则
+        if(pokerJudgeBrandType.judgeBrandType(brands) != OutBrandType.NOT_MATCH){
+            //当前出牌人
+            PokerBrandGamePlayer pokerBrandGamePlayer = gamePlayers.get(nowGamePlayersIndex);
+            //当前出牌人的手中是否存在这些牌
+            if(pokerBrandGamePlayer.isExistence(brands)) {
+                if(brandsStack.isEmpty()){
+                    pokerBrandGamePlayer.removeBrands(brands);
+                    brandsStack.push(brands);
+                    result = true;
+                }else{
 
+                }
 
+            }
         }
+        return result;
     }
 
     @Override
     public void waiver() {
+        waiverIndex++;
+        if(waiverIndex == 2){
+            brandsStack.forEach(brands :: addAll);
+            waiverIndex = 0;
+        }
+        //切换到下一个人
         nextGamePlayer();
     }
 

@@ -36,7 +36,7 @@ public class PokerBrandGamePlayer implements GamePlayer<PokerBrand> {
      * @param outBrands
      * @return
      */
-    public void getBrands(List<PokerBrand> outBrands){
+    public void removeBrands(List<PokerBrand> outBrands){
         brands.removeAll(outBrands);
     }
 

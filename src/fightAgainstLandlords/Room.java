@@ -25,7 +25,7 @@ public interface Room<T> {
      * 出牌
      * @param brands
      */
-    void play(List<T> brands);
+    boolean play(List<T> brands);
 
     /**
      * 弃权
