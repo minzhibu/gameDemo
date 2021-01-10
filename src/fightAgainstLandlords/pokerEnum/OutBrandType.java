@@ -6,4 +6,5 @@ package fightAgainstLandlords.pokerEnum;/*
 
 public enum OutBrandType {
     SINGLE,DOUBLE,THREE_BELTS,EVEN,BOMB,COUPLE,AIRCRAFT,NOT_MATCH
+
 }

@@ -5,9 +5,4 @@ package fightAgainstLandlords;
  */
 public interface Brand {
 
-    /**
-     * 大小
-     * @return
-     */
-    int BrandSort();
 }

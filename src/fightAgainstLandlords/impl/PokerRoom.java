@@ -67,17 +67,31 @@ public class PokerRoom implements Room<PokerBrand> {
     public boolean play(List<PokerBrand> brands) {
         boolean result = false;
         //判断出的牌是否符合规则
-        if(pokerJudgeBrandType.judgeBrandType(brands) != OutBrandType.NOT_MATCH){
+        OutBrandType nowJudge = pokerJudgeBrandType.judgeBrandType(brands);
+        if(!OutBrandType.NOT_MATCH.equals(nowJudge)){
             //当前出牌人
             PokerBrandGamePlayer pokerBrandGamePlayer = gamePlayers.get(nowGamePlayersIndex);
             //当前出牌人的手中是否存在这些牌
             if(pokerBrandGamePlayer.isExistence(brands)) {
+                //当出牌栈为空时，直接将出的牌入栈
                 if(brandsStack.isEmpty()){
-                    pokerBrandGamePlayer.removeBrands(brands);
-                    brandsStack.push(brands);
+                    outPlay(brands);
                     result = true;
                 }else{
-
+                    //获取上家出的牌
+                    List<PokerBrand> nextBrands = brandsStack.pop();
+                    OutBrandType nextJudge = pokerJudgeBrandType.judgeBrandType(nextBrands);
+                    //判断这次出牌和上次出牌是否为同一类型,
+                    if(nextJudge.equals(nowJudge)){
+                        if(new PokerBrandComparator().comparator(nextBrands,brands,nowJudge)){
+                            outPlay(brands);
+                            result = true;
+                        }
+                    //判断这次出的是否为炸弹
+                    }else if(OutBrandType.BOMB.equals(nowJudge)){
+                        outPlay(brands);
+                        result = true;
+                    }
                 }
 
             }
@@ -152,5 +166,14 @@ public class PokerRoom implements Room<PokerBrand> {
     private boolean isRepeat(PokerBrandGamePlayer gamePlayer){
         long count = gamePlayers.stream().filter(pokerBrandGamePlayer -> pokerBrandGamePlayer.getPlayId() == gamePlayer.getPlayId()).count();
         return count != 0;
+    }
+
+    /**
+     * 出牌
+     * @param brand
+     */
+    private void outPlay(List<PokerBrand> brands){
+        gamePlayers.get(nowGamePlayersIndex).removeBrands(brands);
+        brandsStack.push(brands);
     }
 }

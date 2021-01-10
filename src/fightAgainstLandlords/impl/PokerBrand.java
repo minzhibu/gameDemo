@@ -53,8 +53,4 @@ public class PokerBrand implements Brand {
         return Objects.hash(pokeType, pokeName);
     }
 
-    @Override
-    public int BrandSort() {
-        return 0;
-    }
 }

@@ -41,7 +41,7 @@ public class PokerSortRule {
     }
 
     //查询名称的排序号
-    public static int getNameInt(String type){
-        return pokerNameMap.get(type);
+    public static int getNameInt(String name){
+        return pokerNameMap.get(name);
     }
 }
