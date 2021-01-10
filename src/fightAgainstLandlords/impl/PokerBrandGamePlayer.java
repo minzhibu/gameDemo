@@ -52,4 +52,13 @@ public class PokerBrandGamePlayer implements GamePlayer<PokerBrand> {
     public List<PokerBrand> out() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "PokerBrandGamePlayer{" +
+                "brands=" + brands +
+                ", state=" + state +
+                ", playId=" + playId +
+                '}';
+    }
 }

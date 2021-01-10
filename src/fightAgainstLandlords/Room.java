@@ -31,4 +31,9 @@ public interface Room<T> {
      * 弃权
      */
     void waiver();
+
+    /**
+     * 抢地主
+     */
+    void robLandlord(boolean isRob);
 }

@@ -3,9 +3,8 @@ package fightAgainstLandlords.impl;
 import fightAgainstLandlords.*;
 import fightAgainstLandlords.pokerEnum.OutBrandType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 斗地主扑克牌房间
@@ -15,7 +14,7 @@ public class PokerRoom implements Room<PokerBrand> {
     //判断出牌的类型
     private PokerJudgeBrandType pokerJudgeBrandType = new PokerJudgeBrandType();
     //玩家
-    private List<PokerBrandGamePlayer> gamePlayers  = new ArrayList<>();;
+    private List<PokerBrandGamePlayer> gamePlayers  = new ArrayList<>();
     //房间现在存在的牌
     private List<PokerBrand> brands;
     //当前出牌人的下标
@@ -24,21 +23,27 @@ public class PokerRoom implements Room<PokerBrand> {
     private int waiverIndex;
     //上次出的牌
     private Stack<List<PokerBrand>> brandsStack = new Stack<>();
+    //地主
+    private Map<Long,Integer> longIntegerMap;
+    //地主
+    private int landlordIndexTemp;
+    //地主
+    private int landlordIndex;
+    //抢地主次数
+    private int landlordNum;
+    //状态 1:准备 2:抢地主 3:进行游戏
+    private int state;
 
 
-    /**
-     * 创建房间获取扑克牌
-     */
-    {
-        //生成54张扑克牌
-        generate(new PokerGenerate());
-    }
+
 
     @Override
     public void start() {
         if(!isEquipment()){
             return;
         }
+        //重新生成扑克牌
+        generate(new PokerGenerate());
         //洗牌
         shuffleTheCards(new PokerShuffleTheCards());
         //发牌
@@ -47,6 +52,12 @@ public class PokerRoom implements Room<PokerBrand> {
         PokerSort pokerSort = new PokerSort();
         gamePlayers.forEach(gamePlayer -> sortPoker(pokerSort,gamePlayer.getBrands()));
         sortPoker(pokerSort,brands);
+        //随机生成地主
+        longIntegerMap = gamePlayers.stream().collect(Collectors.toMap(PokerBrandGamePlayer::getPlayId,pokerBrandGamePlayer -> 0));
+        landlordIndex = -1;
+        landlordIndexTemp = new Random().nextInt(3);
+        landlordNum = 0;
+        state = 2;
     }
 
 
@@ -108,6 +119,63 @@ public class PokerRoom implements Room<PokerBrand> {
         }
         //切换到下一个人
         nextGamePlayer();
+    }
+
+    @Override
+    public void robLandlord(boolean isRob) {
+        if(state == 3){
+            return;
+        }
+        long playId = gamePlayers.get(landlordIndexTemp).getPlayId();
+        Integer integer = longIntegerMap.get(playId);
+        if(isRob){
+            if(integer == 1){
+                landlordIndex = landlordIndexTemp;
+                state = 3;
+                return;
+            }else if(integer == -1){
+                landlordIndexTemp = (landlordIndexTemp + 1) == gamePlayers.size() ? 0 :landlordIndexTemp + 1;
+            }else{
+                longIntegerMap.put(playId,integer + 1);
+            }
+        }else{
+            if(integer == 1){
+                int temp = landlordIndexTemp;
+                temp = (temp + 1) == gamePlayers.size() ? 0 :temp + 1;
+                while(longIntegerMap.get(gamePlayers.get(temp).getPlayId()) == -1){
+                    temp = (temp + 1) == gamePlayers.size() ? 0 :temp + 1;
+                }
+                landlordIndex = temp;
+                state = 3;
+                return;
+            }else{
+                longIntegerMap.put(playId,-1);
+            }
+        }
+        landlordIndexTemp = (landlordIndexTemp + 1) == gamePlayers.size() ? 0 :landlordIndexTemp + 1;
+        int index = 0;
+        while(longIntegerMap.get(gamePlayers.get(landlordIndexTemp).getPlayId()) == -1){
+            landlordIndexTemp = (landlordIndexTemp + 1) == gamePlayers.size() ? 0 :landlordIndexTemp + 1;
+            index++;
+            if(index == gamePlayers.size()){
+                break;
+            }
+        }
+        int temp = -1;
+        index = 0;
+        for(int i = 0; i < gamePlayers.size(); i++){
+            if(longIntegerMap.get(gamePlayers.get(i).getPlayId()) == -1){
+                index++;
+            }else if(longIntegerMap.get(gamePlayers.get(i).getPlayId()) == 1){
+                temp = i;
+            }
+        }
+        if(index == 3){
+            start();
+        }else if(index == 2 && temp != -1){
+            landlordIndex = temp;
+            state = 3;
+        }
     }
 
     /**
@@ -175,5 +243,100 @@ public class PokerRoom implements Room<PokerBrand> {
     private void outPlay(List<PokerBrand> brands){
         gamePlayers.get(nowGamePlayersIndex).removeBrands(brands);
         brandsStack.push(brands);
+    }
+
+    public PokerJudgeBrandType getPokerJudgeBrandType() {
+        return pokerJudgeBrandType;
+    }
+
+    public void setPokerJudgeBrandType(PokerJudgeBrandType pokerJudgeBrandType) {
+        this.pokerJudgeBrandType = pokerJudgeBrandType;
+    }
+
+    public List<PokerBrandGamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGamePlayers(List<PokerBrandGamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
+    public List<PokerBrand> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(List<PokerBrand> brands) {
+        this.brands = brands;
+    }
+
+    public int getNowGamePlayersIndex() {
+        return nowGamePlayersIndex;
+    }
+
+    public void setNowGamePlayersIndex(int nowGamePlayersIndex) {
+        this.nowGamePlayersIndex = nowGamePlayersIndex;
+    }
+
+    public int getWaiverIndex() {
+        return waiverIndex;
+    }
+
+    public void setWaiverIndex(int waiverIndex) {
+        this.waiverIndex = waiverIndex;
+    }
+
+    public Stack<List<PokerBrand>> getBrandsStack() {
+        return brandsStack;
+    }
+
+    public void setBrandsStack(Stack<List<PokerBrand>> brandsStack) {
+        this.brandsStack = brandsStack;
+    }
+
+    public int getLandlordIndex() {
+        return landlordIndex;
+    }
+
+    public void setLandlordIndex(int landlordIndex) {
+        this.landlordIndex = landlordIndex;
+    }
+
+    public int getLandlordNum() {
+        return landlordNum;
+    }
+
+    public void setLandlordNum(int landlordNum) {
+        this.landlordNum = landlordNum;
+    }
+
+    public int getLandlordIndexTemp() {
+        return landlordIndexTemp;
+    }
+
+    public void setLandlordIndexTemp(int landlordIndexTemp) {
+        this.landlordIndexTemp = landlordIndexTemp;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "PokerRoom{" +
+                "pokerJudgeBrandType=" + pokerJudgeBrandType +
+                ", gamePlayers=" + gamePlayers +
+                ", brands=" + brands +
+                ", nowGamePlayersIndex=" + nowGamePlayersIndex +
+                ", waiverIndex=" + waiverIndex +
+                ", brandsStack=" + brandsStack +
+                ", landlordIndexTemp=" + landlordIndexTemp +
+                ", landlordIndex=" + landlordIndex +
+                ", landlordNum=" + landlordNum +
+                '}';
     }
 }
