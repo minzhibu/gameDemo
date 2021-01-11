@@ -29,8 +29,6 @@ public class PokerRoom implements Room<PokerBrand> {
     private int landlordIndexTemp;
     //地主
     private int landlordIndex;
-    //抢地主次数
-    private int landlordNum;
     //状态 1:准备 2:抢地主 3:进行游戏
     private int state;
 
@@ -56,7 +54,6 @@ public class PokerRoom implements Room<PokerBrand> {
         longIntegerMap = gamePlayers.stream().collect(Collectors.toMap(PokerBrandGamePlayer::getPlayId,pokerBrandGamePlayer -> 0));
         landlordIndex = -1;
         landlordIndexTemp = new Random().nextInt(3);
-        landlordNum = 0;
         state = 2;
     }
 
@@ -77,6 +74,9 @@ public class PokerRoom implements Room<PokerBrand> {
     @Override
     public boolean play(List<PokerBrand> brands) {
         boolean result = false;
+        if(state == 3){
+            return false;
+        }
         //判断出的牌是否符合规则
         OutBrandType nowJudge = pokerJudgeBrandType.judgeBrandType(brands);
         if(!OutBrandType.NOT_MATCH.equals(nowJudge)){
@@ -104,7 +104,9 @@ public class PokerRoom implements Room<PokerBrand> {
                         result = true;
                     }
                 }
-
+                if(pokerBrandGamePlayer.getBrands().size() == 0){
+                    state = 1;
+                }
             }
         }
         return result;
@@ -129,28 +131,9 @@ public class PokerRoom implements Room<PokerBrand> {
         long playId = gamePlayers.get(landlordIndexTemp).getPlayId();
         Integer integer = longIntegerMap.get(playId);
         if(isRob){
-            if(integer == 1){
-                landlordIndex = landlordIndexTemp;
-                state = 3;
-                return;
-            }else if(integer == -1){
-                landlordIndexTemp = (landlordIndexTemp + 1) == gamePlayers.size() ? 0 :landlordIndexTemp + 1;
-            }else{
-                longIntegerMap.put(playId,integer + 1);
-            }
+            longIntegerMap.put(playId,integer + 1);
         }else{
-            if(integer == 1){
-                int temp = landlordIndexTemp;
-                temp = (temp + 1) == gamePlayers.size() ? 0 :temp + 1;
-                while(longIntegerMap.get(gamePlayers.get(temp).getPlayId()) == -1){
-                    temp = (temp + 1) == gamePlayers.size() ? 0 :temp + 1;
-                }
-                landlordIndex = temp;
-                state = 3;
-                return;
-            }else{
-                longIntegerMap.put(playId,-1);
-            }
+            longIntegerMap.put(playId,-1);
         }
         landlordIndexTemp = (landlordIndexTemp + 1) == gamePlayers.size() ? 0 :landlordIndexTemp + 1;
         int index = 0;
@@ -163,16 +146,22 @@ public class PokerRoom implements Room<PokerBrand> {
         }
         int temp = -1;
         index = 0;
+        boolean isDouble = false;
         for(int i = 0; i < gamePlayers.size(); i++){
-            if(longIntegerMap.get(gamePlayers.get(i).getPlayId()) == -1){
+            Integer num = longIntegerMap.get(gamePlayers.get(i).getPlayId());
+            if(num == -1){
                 index++;
-            }else if(longIntegerMap.get(gamePlayers.get(i).getPlayId()) == 1){
+            }else if(num == 1){
                 temp = i;
+            }else if(num == 2){
+                temp = i;
+                isDouble = true;
+                break;
             }
         }
         if(index == 3){
             start();
-        }else if(index == 2 && temp != -1){
+        }else if((index == 2 && temp != -1) || isDouble){
             landlordIndex = temp;
             state = 3;
         }
@@ -238,7 +227,7 @@ public class PokerRoom implements Room<PokerBrand> {
 
     /**
      * 出牌
-     * @param brand
+     * @param brands
      */
     private void outPlay(List<PokerBrand> brands){
         gamePlayers.get(nowGamePlayersIndex).removeBrands(brands);
@@ -300,15 +289,6 @@ public class PokerRoom implements Room<PokerBrand> {
     public void setLandlordIndex(int landlordIndex) {
         this.landlordIndex = landlordIndex;
     }
-
-    public int getLandlordNum() {
-        return landlordNum;
-    }
-
-    public void setLandlordNum(int landlordNum) {
-        this.landlordNum = landlordNum;
-    }
-
     public int getLandlordIndexTemp() {
         return landlordIndexTemp;
     }
@@ -334,9 +314,10 @@ public class PokerRoom implements Room<PokerBrand> {
                 ", nowGamePlayersIndex=" + nowGamePlayersIndex +
                 ", waiverIndex=" + waiverIndex +
                 ", brandsStack=" + brandsStack +
+                ", longIntegerMap=" + longIntegerMap +
                 ", landlordIndexTemp=" + landlordIndexTemp +
                 ", landlordIndex=" + landlordIndex +
-                ", landlordNum=" + landlordNum +
+                ", state=" + state +
                 '}';
     }
 }
