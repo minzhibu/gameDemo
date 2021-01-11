@@ -47,7 +47,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
      * @return
      */
     private boolean singleComparator(List<PokerBrand> next, List<PokerBrand> now){
-        return PokerSortRule.getNameInt(next.get(0).getPokeType()) < PokerSortRule.getNameInt(now.get(0).getPokeType());
+        return PokerSortRule.getNameInt(next.get(0).getPokeName()) < PokerSortRule.getNameInt(now.get(0).getPokeName());
     }
 
     /**
@@ -57,7 +57,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
      * @return
      */
     private boolean doubleComparator(List<PokerBrand> next, List<PokerBrand> now){
-        return PokerSortRule.getNameInt(next.get(0).getPokeType()) < PokerSortRule.getNameInt(now.get(0).getPokeType());
+        return PokerSortRule.getNameInt(next.get(0).getPokeName()) < PokerSortRule.getNameInt(now.get(0).getPokeName());
     }
 
     /**
@@ -69,7 +69,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
     private boolean threeBeltsComparator(List<PokerBrand> next, List<PokerBrand> now){
         PokerBrand nextBrand = getThreeBelts(next);
         PokerBrand nowBrand = getThreeBelts(now);
-        return PokerSortRule.getNameInt(nextBrand.getPokeType()) < PokerSortRule.getNameInt(nowBrand.getPokeType());
+        return PokerSortRule.getNameInt(nextBrand.getPokeName()) < PokerSortRule.getNameInt(nowBrand.getPokeName());
     }
 
     /**
@@ -79,7 +79,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
      * @return
      */
     private boolean evenComparator(List<PokerBrand> next,List<PokerBrand> now){
-        return next.size() == now.size() && PokerSortRule.getNameInt(next.get(0).getPokeType()) < PokerSortRule.getNameInt(now.get(0).getPokeType());
+        return next.size() == now.size() && PokerSortRule.getNameInt(next.get(0).getPokeName()) < PokerSortRule.getNameInt(now.get(0).getPokeName());
     }
 
     /**
@@ -89,7 +89,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
      * @return
      */
     private boolean bombComparator(List<PokerBrand> next, List<PokerBrand> now){
-        return PokerSortRule.getNameInt(next.get(0).getPokeType()) < PokerSortRule.getNameInt(now.get(0).getPokeType());
+        return PokerSortRule.getNameInt(next.get(0).getPokeName()) < PokerSortRule.getNameInt(now.get(0).getPokeName());
     }
 
     /**
@@ -99,7 +99,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
      * @return
      */
     private boolean coupleComparator(List<PokerBrand> next, List<PokerBrand> now){
-        return next.size() == now.size() && PokerSortRule.getNameInt(next.get(0).getPokeType()) < PokerSortRule.getNameInt(now.get(0).getPokeType());
+        return next.size() == now.size() && PokerSortRule.getNameInt(next.get(0).getPokeName()) < PokerSortRule.getNameInt(now.get(0).getPokeName());
     }
 
     /**
@@ -111,7 +111,7 @@ public class PokerBrandComparator implements BrandComparator<PokerBrand, OutBran
     private boolean aircraftComparator(List<PokerBrand> next, List<PokerBrand> now){
         PokerBrand nextBrand = getThreeBelts(next);
         PokerBrand nowBrand = getThreeBelts(now);
-        return next.size() == now.size() && PokerSortRule.getNameInt(nextBrand.getPokeType()) < PokerSortRule.getNameInt(nowBrand.getPokeType());
+        return next.size() == now.size() && PokerSortRule.getNameInt(nextBrand.getPokeName()) < PokerSortRule.getNameInt(nowBrand.getPokeName());
     }
 
     /**

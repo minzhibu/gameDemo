@@ -2,6 +2,7 @@ package fightAgainstLandlords.impl;
 
 import fightAgainstLandlords.DealCards;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -14,7 +15,7 @@ public class PokerDealCards implements DealCards<PokerBrandGamePlayer,PokerBrand
         int num = pokerBrandGamePlayers.size();
         IntStream.range(0, num).mapToObj(i -> {
             PokerBrandGamePlayer gamePlayer = pokerBrandGamePlayers.get(i);
-            gamePlayer.obtain(pokerBrands.subList(i * size, (i + 1) * size));
+            gamePlayer.obtain(new ArrayList<>(pokerBrands.subList(i * size, (i + 1) * size)));
             return gamePlayer;
         }).collect(Collectors.toList());
         return pokerBrands.subList(num * size, pokerBrands.size());

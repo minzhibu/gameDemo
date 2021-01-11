@@ -74,7 +74,7 @@ public class PokerRoom implements Room<PokerBrand> {
     @Override
     public boolean play(List<PokerBrand> brands) {
         boolean result = false;
-        if(state == 3){
+        if(state != 3){
             return false;
         }
         //判断出的牌是否符合规则
@@ -125,7 +125,7 @@ public class PokerRoom implements Room<PokerBrand> {
 
     @Override
     public void robLandlord(boolean isRob) {
-        if(state == 3){
+        if(state != 2){
             return;
         }
         long playId = gamePlayers.get(landlordIndexTemp).getPlayId();
@@ -163,6 +163,8 @@ public class PokerRoom implements Room<PokerBrand> {
             start();
         }else if((index == 2 && temp != -1) || isDouble){
             landlordIndex = temp;
+            nowGamePlayersIndex = temp;
+            brands.forEach(brand -> gamePlayers.get(landlordIndex).getBrands().add(brand));
             state = 3;
         }
     }
@@ -232,6 +234,7 @@ public class PokerRoom implements Room<PokerBrand> {
     private void outPlay(List<PokerBrand> brands){
         gamePlayers.get(nowGamePlayersIndex).removeBrands(brands);
         brandsStack.push(brands);
+        nextGamePlayer();
     }
 
     public PokerJudgeBrandType getPokerJudgeBrandType() {
