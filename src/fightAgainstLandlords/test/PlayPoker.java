@@ -59,7 +59,6 @@ public class PlayPoker {
                     pokerRoom.waiver();
                 }
             }
-
         }
     }
 }
